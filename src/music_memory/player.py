@@ -42,6 +42,7 @@ class Player(Loader):
         if not self.loaded:
             return
         self.music.fadeout(1000)
-        if self.config['elimination']:
-            self.tracks.remove(self.track)
+        if 'elimination' in self.config:
+            if self.config['elimination']:
+                self.tracks.remove(self.track)
         self.play()

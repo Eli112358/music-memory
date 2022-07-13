@@ -10,7 +10,9 @@ class Loader:
 
     def load(self, config: dict):
         self.config = config
-        self.tracks = Playlist(self.config['playlist']).tracks.copy()
+        playlist = Playlist(self.config['playlist'])
+        playlist.load()
+        self.tracks = playlist.tracks.copy()
         self.loaded = True
         self.__post_load__()
 
