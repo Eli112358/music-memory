@@ -86,18 +86,13 @@ class Application(Tk, Loader):
         for col in HEADER:
             self.track_listing.heading(col, text=col.title(), command=lambda c=col: self.sort_by(c, False))
             self.track_listing.column(col, width=Font().measure(col.title()))
-        for item in self.tracks:
-            self.track_listing.insert('', 'end', values=[item])
-            for ix, val in enumerate([item]):
-                col_w = Font().measure(val.tag.title)
-                if self.track_listing.column(HEADER[ix], width=None) < col_w:
-                    self.track_listing.column(HEADER[ix], width=col_w)
         self.search_frame.grid_columnconfigure(0, weight=1)
         self.search_frame.grid_rowconfigure(0, weight=1)
 
     def __post_load__(self):
         self.player.tracks = self.tracks
-        # todo: populate track listing
+        self.player.loaded = True
+        self.update_track_listing()
 
     def closing(self):
         self.player.stop()
@@ -105,7 +100,7 @@ class Application(Tk, Loader):
 
     def search(self, query):
         print(query)
-        # todo: update track listing
+        self.update_track_listing()
         return True
 
     def sort_by(self, col: int, descending: bool):
@@ -127,6 +122,21 @@ class Application(Tk, Loader):
             filetypes=file_types
         )
         self.load({'playlist': path})
+
+    def update_track_listing(self):
+        for track in self.tracks:
+            if not track.tag:
+                continue
+            self.track_listing.insert('', 'end', values=[
+                track.tag.title,
+                track.tag.artist,
+                track.tag.album
+            ])
+            for ix, val in enumerate([track]):
+                col_w = Font().measure(val.tag.title)
+                if self.track_listing.column(HEADER[ix], width=None) < col_w:
+                    self.track_listing.column(HEADER[ix], width=col_w)
+        self.track_listing.grid()
 
 
 def main():
