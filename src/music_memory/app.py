@@ -1,4 +1,4 @@
-from tkinter import Tk, StringVar, Menu
+from tkinter import Tk, StringVar, Menu, filedialog
 from tkinter.font import Font
 from tkinter.ttk import Button, Entry, Treeview, Scrollbar, Frame
 
@@ -46,6 +46,7 @@ class Application(Tk, Loader):
         self.menus.load = Menu(self.menus.file, tearoff=False)
         self.menus.main.add_cascade(label='File', menu=self.menus.file)
         self.menus.file.add_cascade(label='Load', menu=self.menus.load)
+        self.menus.load.add_command(label='Playlist', command=self.load_playlist)
 
         # player
         self.player_frame = Frame(self)
@@ -115,7 +116,16 @@ class Application(Tk, Loader):
             self.track_listing.move(item[1], '', ix)
         self.track_listing.heading(col, command=lambda c=col: self.sort_by(c, not descending))
 
-    def load_playlist(self, path):
+    def load_playlist(self):
+        file_types = (
+            ('playlist files', '*.m3u *.m3u8'),
+            ('All files', '*.*')
+        )
+        path = filedialog.askopenfilename(
+            title='Load a playlist',
+            initialdir='/',
+            filetypes=file_types
+        )
         self.load({'playlist': path})
 
 
