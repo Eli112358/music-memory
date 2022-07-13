@@ -124,6 +124,7 @@ class Application(Tk, Loader):
         self.load({'playlist': path})
 
     def update_track_listing(self):
+        self.track_listing.delete(*self.track_listing.get_children())
         for track in self.tracks:
             if not track.tag:
                 continue
